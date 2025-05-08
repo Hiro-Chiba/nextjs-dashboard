@@ -4,6 +4,26 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import postgres from 'postgres';
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth';
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+        // ここで error.message を見る
+        if (error.message.includes('CredentialsSignin')) {
+            return 'メールアドレスまたはパスワードが正しくありません。';
+        }
+        return 'エラーが発生しました。';
+    }
+    throw error;
+}
+}
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
  
