@@ -6,16 +6,19 @@ import { fetchCardData } from '@/app/lib/data'; // Remove fetchLatestInvoices
 import { Suspense } from 'react';
 import { RevenueChartSkeleton, LatestInvoicesSkeleton, CardsSkeleton } from '@/app/ui/skeletons';
 import CardWrapper from '@/app/ui/dashboard/cards';
+
+export const metadata = {
+  title: 'ダッシュボード',
+  description: 'ユーザーの概要と統計情報を表示します。',
+  keywords: ['ダッシュボード', '管理画面', '統計'],
+  robots: 'index, follow',
+  alternates: {
+    canonical: '/dashboard',
+  },
+};
  
-export default async function Page(props: {
-  searchParams?: Promise<{
-    query?: string;
-    page?: string;
-  }>;
-}) {
-  const searchParams = await props.searchParams;
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
+export default async function Page() {
+  
   return (
     <main>
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>

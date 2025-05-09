@@ -4,6 +4,17 @@ import Link from 'next/link';
 import styles from '@/app/ui/home.module.css';
 import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image';
+import { Metadata } from 'next';
+ 
+export const metadata = {
+  title: 'ログイン',
+  description: 'アカウントにログインしてダッシュボードへアクセス。',
+  keywords: ['ログイン', 'ユーザー認証', 'アカウント'],
+  robots: 'index, follow',
+  alternates: {
+    canonical: '/login',
+  },
+};
 
 export default function Page() {
   return (
