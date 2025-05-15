@@ -1,5 +1,9 @@
 'use client';
 
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/auth'; // NextAuthの設定
+
+
 import {
   UserGroupIcon,
   HomeIcon,
@@ -8,6 +12,10 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+
+export async function NavLinks() {
+  const session = await getServerSession(authOptions);
+
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
@@ -20,6 +28,10 @@ const links = [
   },
   { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
 ];
+
+if (session?.user.role === 'admin') {
+    links.push({ name: 'Users', href: '/dashboard/users', icon: UserGroupIcon });
+  }
 
 export default function NavLinks() {
   const pathname = usePathname();

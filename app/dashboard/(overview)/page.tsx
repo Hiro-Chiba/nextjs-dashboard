@@ -7,16 +7,6 @@ import { Suspense } from 'react';
 import { RevenueChartSkeleton, LatestInvoicesSkeleton, CardsSkeleton } from '@/app/ui/skeletons';
 import CardWrapper from '@/app/ui/dashboard/cards';
 
-export const metadata = {
-  title: 'ダッシュボード',
-  description: 'ユーザーの概要と統計情報を表示します。',
-  keywords: ['ダッシュボード', '管理画面', '統計'],
-  robots: 'index, follow',
-  alternates: {
-    canonical: '/dashboard',
-  },
-};
- 
 export default async function Page() {
   
   return (
