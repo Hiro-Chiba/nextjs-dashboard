@@ -16,6 +16,19 @@ export const authConfig = {
       }
       return true;
     },
+    //  JWT に role を含める
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+      }
+      return token;
+    },
+
+    //  セッションオブジェクトに role を注入
+    async session({ session, token }) {
+      session.user.role = token.role as string | undefined;
+      return session;
+    },
   },
   providers: [], // Add providers with an empty array for now
 } satisfies NextAuthConfig;

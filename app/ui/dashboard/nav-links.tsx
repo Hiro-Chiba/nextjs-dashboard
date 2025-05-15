@@ -1,9 +1,5 @@
 'use client';
 
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/auth'; // NextAuthの設定
-
-
 import {
   UserGroupIcon,
   HomeIcon,
@@ -13,28 +9,28 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
-export async function NavLinks() {
-  const session = await getServerSession(authOptions);
+type Props = {
+  role: string;
+};
 
+export default function NavLinks({ role }: Props) {
+  //console.log("NavLinks role:", role);
+  const pathname = usePathname();
 
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
-const links = [
-  { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  {
-    name: 'Invoices',
-    href: '/dashboard/invoices',
-    icon: DocumentDuplicateIcon,
-  },
-  { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
-];
+  const links = [
+    { name: 'Home', href: '/dashboard', icon: HomeIcon },
+    { name: 'Invoices', href: '/dashboard/invoices', icon: DocumentDuplicateIcon },
+    { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
+  ];
 
-if (session?.user.role === 'admin') {
-    links.push({ name: 'Users', href: '/dashboard/users', icon: UserGroupIcon });
+  if (role === 'admin') {
+    links.push({
+      name: 'users',
+      href: '/dashboard/users',
+      icon: UserGroupIcon,
+    });
   }
 
-export default function NavLinks() {
-  const pathname = usePathname();
   return (
     <>
       {links.map((link) => {
@@ -48,7 +44,7 @@ export default function NavLinks() {
               {
                 'bg-sky-100 text-blue-600': pathname === link.href,
               },
-            )}          >
+            )}        >
             <LinkIcon className="w-6" />
             <p className="hidden md:block">{link.name}</p>
           </Link>
