@@ -227,3 +227,61 @@ export async function fetchFilteredCustomers(query: string) {
     throw new Error('Failed to fetch customer table.');
   }
 }
+
+export async function fetchUsersPages(query: string) {
+  noStore();
+  try {
+    const data = await sql`SELECT COUNT(*)
+    FROM users
+    WHERE
+      role = 'user' AND (
+        users.name ILIKE ${'%' + query + '%'} OR
+        users.email ILIKE ${'%' + query + '%'}
+      )
+  `;
+
+    const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of Users.');
+  }
+}
+
+type UserRow = {
+  id: string;
+  name: string;
+  email: string;
+  role?: string;
+};
+
+export async function fetchFilteredUsers(
+  query: string,
+  currentPage: number,
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const users = await sql<UserRow[]>`
+      SELECT
+        id,
+        name,
+        email,
+        role
+      FROM users
+      WHERE
+        role = 'user' AND (
+        users.name ILIKE ${'%' + query + '%'} OR
+        users.email ILIKE ${'%' + query + '%'}
+        )
+      ORDER BY name ASC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+    `;
+
+    return users;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoices.');
+  }
+}
