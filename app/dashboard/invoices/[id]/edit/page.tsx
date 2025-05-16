@@ -5,11 +5,11 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const invoiceId = params.id;
+  const { id: invoiceId } = await params;
   return {
     title: `請求書の編集 - ${invoiceId}`,
     description: `請求書 #${invoiceId} の編集ページです。`,
@@ -21,7 +21,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Page({ params }: Props) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     const id = params.id;
     const [invoice, customers] = await Promise.all([
         fetchInvoiceById(id),
