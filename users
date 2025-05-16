@@ -1,0 +1,6 @@
+adminユーザ
+| name   | email                | password（平文） | role    |
+| ------ | -------------------- | ------------ | ------- |
+| user2  | `user2@example.com`  | `user123`    | `user`  |
+| admin1 | `admin1@example.com` | `admin123`   | `admin` |
+| admin2 | `admin2@example.com` | `admin123`   | `admin` |
