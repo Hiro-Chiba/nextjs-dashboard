@@ -75,6 +75,5 @@ export default function EditUserForm({
         <Button type="submit">Edit Users</Button>
       </div>
     </form>
-    
   );
 }
