@@ -51,6 +51,7 @@ const UserFormSchema = z.object({
  
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+const CreateUser = UserFormSchema.omit({ id: true, role: true });
 const UpdateUser = UserFormSchema.omit({ id: true, password: true, role: true});
 
 export type State = {
@@ -142,6 +143,44 @@ export async function updateInvoice(
  
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
+}
+
+export async function createUser(prevState: UserState, formData: FormData) {
+  // Validate form using Zod
+  const validatedFields = CreateUser.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    password: formData.get('password'),
+  });
+ 
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Invoice.',
+    };
+  }
+ 
+  // Prepare data for insertion into the database
+  const { name, email, password } = validatedFields.data;
+  const role = 'user';
+ 
+  // Insert data into the database
+  try {
+    await sql`
+      INSERT INTO users (name, email, password, role)
+      VALUES (${name}, ${email}, ${password}, ${role})
+    `;
+  } catch (error) {
+    // If a database error occurs, return a more specific error.
+    return {
+      message: 'Database Error: Failed to Create Invoice.',
+    };
+  }
+ 
+  // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath('/dashboard/users');
+  redirect('/dashboard/users');
 }
 
 export async function updateUser(
