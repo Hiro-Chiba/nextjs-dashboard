@@ -149,7 +149,7 @@ export async function updateUser(
   prevState: UserState,
   formData: FormData,
 ) {
-  // throw new Error('実行されてるか確認！');
+  // throw new Error('実行されてるか確認');
   const validatedFields = UpdateUser.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
