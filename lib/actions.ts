@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 import postgres from 'postgres';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import bcrypt from 'bcryptjs';
 
 export async function authenticate(
   prevState: string | undefined,
@@ -40,15 +41,33 @@ const FormSchema = z.object({
   }),
   date: z.string(),
 });
+
+const UserFormSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+  password: z.string(),
+  role: z.enum(['admin', 'user']),
+});
  
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+const CreateUser = UserFormSchema.omit({ id: true, role: true });
+const UpdateUser = UserFormSchema.omit({ id: true, password: true, role: true});
 
 export type State = {
   errors?: {
     customerId?: string[];
     amount?: string[];
     status?: string[];
+  };
+  message?: string | null;
+};
+
+export type UserState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
   };
   message?: string | null;
 };
@@ -127,9 +146,84 @@ export async function updateInvoice(
   redirect('/dashboard/invoices');
 }
 
-export async function deleteInvoice(id: string) {
-  throw new Error('Failed to Delete Invoice');
+export async function createUser(prevState: UserState, formData: FormData) {
+  // Validate form using Zod
+  const validatedFields = CreateUser.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    password: formData.get('password'),
+  });
+ 
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Invoice.',
+    };
+  }
+ 
+  // Prepare data for insertion into the database
+  const { name, email, password } = validatedFields.data;
+  const role = 'user';
+  const hashedPassword = await bcrypt.hash(password, 10);//　ハッシュ化する
+ 
+  // Insert data into the database
+  try {
+    await sql`
+      INSERT INTO users (name, email, password, role)
+      VALUES (${name}, ${email}, ${hashedPassword}, ${role})
+    `;
+  } catch (error) {
+    // If a database error occurs, return a more specific error.
+    return {
+      message: 'Database Error: Failed to Create Invoice.',
+    };
+  }
+ 
+  // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath('/dashboard/users');
+  redirect('/dashboard/users');
+}
 
+export async function updateUser(
+  id: string,
+  prevState: UserState,
+  formData: FormData,
+) {
+  // throw new Error('実行されてるか確認');
+  const validatedFields = UpdateUser.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Invoice.',
+    };
+  }
+ 
+  const { name, email } = validatedFields.data;
+
+  try {
+    await sql`
+      UPDATE users
+      SET name = ${name}, email = ${email}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Invoice.' };
+  }
+ 
+  revalidatePath('/dashboard/users');
+  redirect('/dashboard/users');
+}
+export async function deleteInvoice(id: string) {
   await sql`DELETE FROM invoices WHERE id = ${id}`;
   revalidatePath('/dashboard/invoices');
+}
+
+export async function deleteUser(id: string) {
+  await sql`DELETE FROM users WHERE id = ${id}`;
+  revalidatePath('/dashboard/users');
 }

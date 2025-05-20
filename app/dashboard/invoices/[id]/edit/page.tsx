@@ -1,6 +1,6 @@
 import Form from '@/app/ui/invoices/edit-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
+import { fetchInvoiceById, fetchCustomers } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 
@@ -21,9 +21,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Page(props: { params: Promise<{ id: string }> }) {
-    const params = await props.params;
-    const id = params.id;
+export default async function Page({ params }: Props) {
+    const { id } = await params;
     const [invoice, customers] = await Promise.all([
         fetchInvoiceById(id),
         fetchCustomers(),

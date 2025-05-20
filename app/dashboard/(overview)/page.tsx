@@ -2,21 +2,11 @@ import { Card } from '@/app/ui/dashboard/cards';
 import RevenueChart from '@/app/ui/dashboard/revenue-chart';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchCardData } from '@/app/lib/data'; // Remove fetchLatestInvoices
+import { fetchCardData } from '@/lib/data'; // Remove fetchLatestInvoices
 import { Suspense } from 'react';
 import { RevenueChartSkeleton, LatestInvoicesSkeleton, CardsSkeleton } from '@/app/ui/skeletons';
 import CardWrapper from '@/app/ui/dashboard/cards';
 
-export const metadata = {
-  title: 'ダッシュボード',
-  description: 'ユーザーの概要と統計情報を表示します。',
-  keywords: ['ダッシュボード', '管理画面', '統計'],
-  robots: 'index, follow',
-  alternates: {
-    canonical: '/dashboard',
-  },
-};
- 
 export default async function Page() {
   
   return (

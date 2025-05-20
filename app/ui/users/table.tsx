@@ -1,54 +1,54 @@
 import Image from 'next/image';
-import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
+import { UpdateUser, DeleteUser } from '@/app/ui/users/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/lib/utils';
-import { fetchFilteredInvoices } from '@/lib/data';
+import { fetchFilteredUsers } from '@/lib/data';
 
-export default async function InvoicesTable({
+export default async function UsersTable({
   query,
   currentPage,
 }: {
   query: string;
   currentPage: number;
 }) {
-  const invoices = await fetchFilteredInvoices(query, currentPage);
+  const users = await fetchFilteredUsers(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {invoices?.map((invoice) => (
+            {users?.map((user) => (
               <div
-                key={invoice.id}
+                key={user.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      <Image
-                        src={invoice.image_url}
+                      {/* <Image
+                        src={user.image_url}
                         className="mr-2 rounded-full"
                         width={28}
                         height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      />
-                      <p>{invoice.name}</p>
+                        alt={`${user.name}'s profile picture`}
+                      /> */}
+                      <p>{user.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{invoice.email}</p>
+                    <p className="text-sm text-gray-500">{user.email}</p>
                   </div>
-                  <InvoiceStatus status={invoice.status} />
+                  {/* <InvoiceStatus status={invoice.status} /> */}
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
-                  <div>
+                  {/* <div>
                     <p className="text-xl font-medium">
                       {formatCurrency(invoice.amount)}
                     </p>
                     <p>{formatDateToLocal(invoice.date)}</p>
-                  </div>
+                  </div> */}
                   <div className="flex justify-end gap-2">
-                    <UpdateInvoice id={invoice.id} />
-                    <DeleteInvoice id={invoice.id} />
+                    <UpdateUser id={user.id} />
+                    <DeleteUser id={user.id} />
                   </div>
                 </div>
               </div>
@@ -58,12 +58,12 @@ export default async function InvoicesTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
+                  Name
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Email
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
+                {/* <th scope="col" className="px-3 py-5 font-medium">
                   Amount
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
@@ -71,34 +71,34 @@ export default async function InvoicesTable({
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Status
-                </th>
+                </th> */}
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white">
-              {invoices?.map((invoice) => (
+              {users?.map((user) => (
                 <tr
-                  key={invoice.id}
+                  key={user.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <Image
-                        src={invoice.image_url}
+                      {/* <Image
+                        src={user.image_url}
                         className="rounded-full"
                         width={28}
                         height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      />
-                      <p>{invoice.name}</p>
+                        alt={`${user.name}'s profile picture`}
+                      /> */}
+                      <p>{user.name}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.email}
+                    {user.email}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                  {/* <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(invoice.amount)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
@@ -106,11 +106,11 @@ export default async function InvoicesTable({
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <InvoiceStatus status={invoice.status} />
-                  </td>
+                  </td> */}
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateInvoice id={invoice.id} />
-                      <DeleteInvoice id={invoice.id} />
+                      <UpdateUser id={user.id} />
+                      <DeleteUser id={user.id} />
                     </div>
                   </td>
                 </tr>
