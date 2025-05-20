@@ -3,6 +3,7 @@ import {
   CustomerField,
   CustomersTableType,
   InvoiceForm,
+  UserForm,
   InvoicesTable,
   LatestInvoiceRaw,
   Revenue,
@@ -289,7 +290,7 @@ export async function fetchFilteredUsers(
 export async function fetchUserById(id: string) {
   noStore();
   try {
-    const data = await sql<InvoiceForm[]>`
+    const data = await sql<UserForm[]>`
       SELECT id, name, email
       FROM users
       WHERE id = ${id};

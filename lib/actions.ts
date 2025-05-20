@@ -40,15 +40,32 @@ const FormSchema = z.object({
   }),
   date: z.string(),
 });
+
+const UserFormSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+  password: z.string(),
+  role: z.enum(['admin', 'user']),
+});
  
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+const UpdateUser = UserFormSchema.omit({ id: true, password: true, role: true});
 
 export type State = {
   errors?: {
     customerId?: string[];
     amount?: string[];
     status?: string[];
+  };
+  message?: string | null;
+};
+
+export type UserState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
   };
   message?: string | null;
 };
@@ -127,6 +144,39 @@ export async function updateInvoice(
   redirect('/dashboard/invoices');
 }
 
+export async function updateUser(
+  id: string,
+  prevState: UserState,
+  formData: FormData,
+) {
+  // throw new Error('実行されてるか確認！');
+  const validatedFields = UpdateUser.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Invoice.',
+    };
+  }
+ 
+  const { name, email } = validatedFields.data;
+
+  try {
+    await sql`
+      UPDATE users
+      SET name = ${name}, email = ${email}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Invoice.' };
+  }
+ 
+  revalidatePath('/dashboard/users');
+  redirect('/dashboard/users');
+}
 export async function deleteInvoice(id: string) {
   await sql`DELETE FROM invoices WHERE id = ${id}`;
   revalidatePath('/dashboard/invoices');
