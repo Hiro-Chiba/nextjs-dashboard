@@ -1,20 +1,16 @@
-import Form from '@/app/ui/invoices/edit-form';
+import Form from '@/app/ui/users/edit-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchInvoiceById, fetchCustomers } from '@/lib/data';
+import { fetchUserById } from '@/lib/data';
 import { notFound } from 'next/navigation';
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
-export default async function Page(props: { params: Promise<{ id: string }> }) {
-    const params = await props.params;
-    const id = params.id;
-    const [invoice, customers] = await Promise.all([
-        fetchInvoiceById(id),
-        fetchCustomers(),
-      ]);
-      if (!invoice) {
+export default async function Page({ params }: Props) {
+    const { id } = await params;
+    const user = await fetchUserById(id);
+      if (!user) {
         notFound();
       }
 
@@ -22,15 +18,15 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Invoices', href: '/dashboard/invoices' },
+          { label: 'Users', href: '/dashboard/users' },
           {
-            label: 'Edit Invoice',
-            href: `/dashboard/invoices/${id}/edit`,
+            label: 'Edit Users',
+            href: `/dashboard/users/${id}/edit`,
             active: true,
           },
         ]}
       />
-      <Form invoice={invoice} customers={customers} />
+      <Form user={user}  />
     </main>
   );
 }
