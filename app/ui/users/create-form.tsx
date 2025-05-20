@@ -1,6 +1,6 @@
 'use client';
 
-import { createInvoice, State } from '@/lib/actions';
+import { createUser, UserState } from '@/lib/actions';
 import { useActionState } from 'react';
 import { CustomerField } from '@/lib/definitions';
 import Link from 'next/link';
@@ -11,9 +11,9 @@ import {
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 
-export default function Form({ customers }: { customers: CustomerField[] }) {
-  const initialState: State = { message: null, errors: {} };
-  const [state, formAction] = useActionState(createInvoice, initialState);
+export default function Form() {
+  const initialState: UserState = { message: null, errors: {} };
+  const [state, formAction] = useActionState(createUser, initialState);
   return (
     <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
