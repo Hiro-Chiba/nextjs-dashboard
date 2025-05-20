@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 import postgres from 'postgres';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import bcrypt from 'bcryptjs';
 
 export async function authenticate(
   prevState: string | undefined,
@@ -164,12 +165,13 @@ export async function createUser(prevState: UserState, formData: FormData) {
   // Prepare data for insertion into the database
   const { name, email, password } = validatedFields.data;
   const role = 'user';
+  const hashedPassword = await bcrypt.hash(password, 10);//　ハッシュ化する
  
   // Insert data into the database
   try {
     await sql`
       INSERT INTO users (name, email, password, role)
-      VALUES (${name}, ${email}, ${password}, ${role})
+      VALUES (${name}, ${email}, ${hashedPassword}, ${role})
     `;
   } catch (error) {
     // If a database error occurs, return a more specific error.
