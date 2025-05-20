@@ -1,8 +1,7 @@
 'use client';
 
-import { updateInvoice, State } from '@/lib/actions';
+import { updateUser, UserState } from '@/lib/actions';
 import { useActionState } from 'react';
-import { CustomerField, InvoiceForm } from '@/lib/definitions';
 import { User } from '@/lib/definitions';
 import {
   CheckIcon,
@@ -19,12 +18,16 @@ export default function EditUserForm({
 }: {
   user: User;
 }) {
-  const initialState: State = { message: null, errors: {} };
-  const updateInvoiceWithId = updateInvoice.bind(null, user.id);
+  const initialState: UserState = { message: null, errors: {} };
+  const updateUserWithId = updateUser.bind(null, user.id);
   
-  const [state, formAction] = useActionState(updateInvoiceWithId, initialState);
+  const [state, formAction] = useActionState(updateUserWithId, initialState);
   return (
     <form action={formAction}>
+      {/* エラーメッセージ表示 */}
+      {state.message && (
+        <p className="text-red-500 text-sm mt-2">{state.message}</p>
+      )}
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* User Name */}
         <div className="mb-4">
@@ -72,5 +75,6 @@ export default function EditUserForm({
         <Button type="submit">Edit Users</Button>
       </div>
     </form>
+    
   );
 }
