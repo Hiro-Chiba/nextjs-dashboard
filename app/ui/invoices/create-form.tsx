@@ -1,8 +1,8 @@
 'use client';
 
-import { createInvoice, State } from '@/app/lib/actions';
+import { createInvoice, State } from '@/lib/actions';
 import { useActionState } from 'react';
-import { CustomerField } from '@/app/lib/definitions';
+import { CustomerField } from '@/lib/definitions';
 import Link from 'next/link';
 import {
   CheckIcon,

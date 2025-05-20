@@ -9,20 +9,28 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
-const links = [
-  { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  {
-    name: 'Invoices',
-    href: '/dashboard/invoices',
-    icon: DocumentDuplicateIcon,
-  },
-  { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
-];
+type Props = {
+  role: string;
+};
 
-export default function NavLinks() {
+export default function NavLinks({ role }: Props) {
+  //console.log("NavLinks role:", role);
   const pathname = usePathname();
+
+  const links = [
+    { name: 'Home', href: '/dashboard', icon: HomeIcon },
+    { name: 'Invoices', href: '/dashboard/invoices', icon: DocumentDuplicateIcon },
+    { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
+  ];
+
+  if (role === 'admin') {
+    links.push({
+      name: 'users',
+      href: '/dashboard/users',
+      icon: UserGroupIcon,
+    });
+  }
+
   return (
     <>
       {links.map((link) => {
